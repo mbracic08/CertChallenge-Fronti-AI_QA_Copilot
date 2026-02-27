@@ -1,0 +1,33 @@
+<svg width="980" height="320" viewBox="0 0 980 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="980" height="320" rx="16" fill="#0B0B0F"/>
+  <rect x="18" y="18" width="944" height="284" rx="14" fill="#111118" stroke="#27272A"/>
+
+  <text x="38" y="56" fill="#F8FAFC" font-size="30" font-family="sans-serif" font-weight="700">Comparison</text>
+  <text x="38" y="84" fill="#A1A1AA" font-size="15" font-family="sans-serif">sample_size=20, top_k=5, fetch_k=25</text>
+
+  <rect x="38" y="106" width="904" height="174" rx="10" fill="#0F111A" stroke="#27272A"/>
+
+  <text x="52" y="138" fill="#F8FAFC" font-size="18" font-family="sans-serif" font-weight="700">Metric</text>
+  <text x="365" y="138" fill="#F8FAFC" font-size="18" font-family="sans-serif" font-weight="700">Baseline</text>
+  <text x="555" y="138" fill="#F8FAFC" font-size="18" font-family="sans-serif" font-weight="700">Advanced</text>
+  <text x="770" y="138" fill="#F8FAFC" font-size="18" font-family="sans-serif" font-weight="700">Delta</text>
+
+  <line x1="38" y1="154" x2="942" y2="154" stroke="#27272A"/>
+  <line x1="38" y1="196" x2="942" y2="196" stroke="#27272A"/>
+  <line x1="38" y1="238" x2="942" y2="238" stroke="#27272A"/>
+
+  <text x="52" y="182" fill="#F8FAFC" font-size="20" font-family="sans-serif">Faithfulness</text>
+  <text x="365" y="182" fill="#F8FAFC" font-size="20" font-family="sans-serif">0.8414</text>
+  <text x="555" y="182" fill="#F8FAFC" font-size="20" font-family="sans-serif">0.8418</text>
+  <text x="770" y="182" fill="#22C55E" font-size="20" font-family="sans-serif">0.0004</text>
+
+  <text x="52" y="224" fill="#F8FAFC" font-size="20" font-family="sans-serif">Context precision</text>
+  <text x="365" y="224" fill="#F8FAFC" font-size="20" font-family="sans-serif">0.7974</text>
+  <text x="555" y="224" fill="#F8FAFC" font-size="20" font-family="sans-serif">0.7679</text>
+  <text x="770" y="224" fill="#F43F5E" font-size="20" font-family="sans-serif">-0.0295</text>
+
+  <text x="52" y="266" fill="#F8FAFC" font-size="20" font-family="sans-serif">Context recall</text>
+  <text x="365" y="266" fill="#F8FAFC" font-size="20" font-family="sans-serif">0.6862</text>
+  <text x="555" y="266" fill="#F8FAFC" font-size="20" font-family="sans-serif">0.6567</text>
+  <text x="770" y="266" fill="#F43F5E" font-size="20" font-family="sans-serif">-0.0295</text>
+</svg>
