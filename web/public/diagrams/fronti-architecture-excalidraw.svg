@@ -39,13 +39,17 @@
   <text x="574" y="358" fill="#F8FAFC" font-size="20" font-family="sans-serif" font-weight="700">Agent</text>
   <text x="574" y="384" fill="#A1A1AA" font-size="15" font-family="sans-serif">Tools:</text>
   <text x="590" y="410" fill="#A1A1AA" font-size="15" font-family="sans-serif">- Page Scan</text>
-  <text x="590" y="434" fill="#A1A1AA" font-size="15" font-family="sans-serif">- Flow Spec Test Generation</text>
+  <text x="590" y="434" fill="#A1A1AA" font-size="15" font-family="sans-serif">- search_playwright_docs</text>
   <text x="590" y="458" fill="#A1A1AA" font-size="15" font-family="sans-serif">- Tavily (fallback only)</text>
 
   <rect x="860" y="324" width="286" height="180" rx="12" fill="#111118" stroke="#F8FAFC" stroke-width="2"/>
   <text x="882" y="358" fill="#F8FAFC" font-size="20" font-family="sans-serif" font-weight="700">Evaluation</text>
   <text x="882" y="384" fill="#A1A1AA" font-size="15" font-family="sans-serif">RAGAS baseline / advanced / compare</text>
   <text x="882" y="408" fill="#A1A1AA" font-size="15" font-family="sans-serif">Uses retrieval + scoring pipeline</text>
+
+  <rect x="860" y="540" width="286" height="106" rx="12" fill="#111118" stroke="#F8FAFC" stroke-width="2"/>
+  <text x="882" y="578" fill="#F8FAFC" font-size="18" font-family="sans-serif" font-weight="700">Playwright .md docs</text>
+  <text x="882" y="602" fill="#A1A1AA" font-size="14" font-family="sans-serif">Ingest source for RAG retrieval</text>
 
   <rect x="552" y="540" width="286" height="106" rx="12" fill="#111118" stroke="#F8FAFC" stroke-width="2"/>
   <text x="574" y="578" fill="#F8FAFC" font-size="18" font-family="sans-serif" font-weight="700">Flow Spec Test Run</text>
@@ -81,11 +85,13 @@
     <path d="M655 806V836H340V546"/>
     <path d="M943 504V836H655" marker-end="none"/>
     <path d="M838 430H1230"/>
+    <path d="M1146 593H1230"/>
   </g>
 
   <text x="454" y="496" fill="#FF3AA6" font-size="14" font-family="sans-serif">create/poll jobs</text>
   <text x="430" y="832" fill="#FF3AA6" font-size="14" font-family="sans-serif">results to Vercel</text>
   <text x="1110" y="426" fill="#FF3AA6" font-size="14" font-family="sans-serif">RAG, evaluation</text>
+  <text x="1120" y="588" fill="#FF3AA6" font-size="14" font-family="sans-serif">ingest/retrieve</text>
   
 
   <rect x="64" y="890" width="1372" height="46" rx="10" fill="#111118" stroke="#27272A"/>
