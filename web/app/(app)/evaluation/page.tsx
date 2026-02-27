@@ -283,7 +283,7 @@ export default function EvaluationPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Evaluation</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Run baseline and advanced retrieval evaluation for faithfulness, context precision, and context recall.
+          Run baseline and advanced retrieval evaluation for faithfulness, response relevance, context precision, and context recall.
         </p>
       </div>
 
@@ -470,8 +470,9 @@ function MetricCard({ title, result }: { title: string; result: EvalRunResult })
         <CardDescription>{result.conclusion}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-4">
           <MetricItem label="Faithfulness" value={result.metrics.faithfulness} />
+          <MetricItem label="Response relevance" value={result.metrics.response_relevance} />
           <MetricItem label="Context precision" value={result.metrics.context_precision} />
           <MetricItem label="Context recall" value={result.metrics.context_recall} />
         </div>
@@ -494,9 +495,9 @@ function MetricTable({
   advanced,
   delta,
 }: {
-  baseline: { faithfulness: number; context_precision: number; context_recall: number };
-  advanced: { faithfulness: number; context_precision: number; context_recall: number };
-  delta: { faithfulness: number; context_precision: number; context_recall: number };
+  baseline: { faithfulness: number; response_relevance: number; context_precision: number; context_recall: number };
+  advanced: { faithfulness: number; response_relevance: number; context_precision: number; context_recall: number };
+  delta: { faithfulness: number; response_relevance: number; context_precision: number; context_recall: number };
 }) {
   return (
     <div className="overflow-x-auto rounded-md border border-border">
@@ -511,6 +512,12 @@ function MetricTable({
         </thead>
         <tbody>
           <Row name="Faithfulness" baseline={baseline.faithfulness} advanced={advanced.faithfulness} delta={delta.faithfulness} />
+          <Row
+            name="Response relevance"
+            baseline={baseline.response_relevance}
+            advanced={advanced.response_relevance}
+            delta={delta.response_relevance}
+          />
           <Row
             name="Context precision"
             baseline={baseline.context_precision}

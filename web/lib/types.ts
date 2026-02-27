@@ -108,6 +108,7 @@ export interface RunTestsResult {
 
 export interface EvalMetricSet {
   faithfulness: number;
+  response_relevance: number;
   context_precision: number;
   context_recall: number;
 }
@@ -122,6 +123,7 @@ export interface EvalRunResult {
     precision: number;
     recall: number;
     faithfulness: number;
+    response_relevance: number;
   }>;
   config: {
     sample_size: number;

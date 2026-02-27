@@ -36,7 +36,7 @@ const toolStack = [
   {
     title: "7. Evaluation framework",
     description:
-      "RAGAS is our quality gate for retrieval, measuring faithfulness, context precision, and context recall on synthetic QA-style samples.",
+      "RAGAS is our quality gate for retrieval, measuring faithfulness, response relevance, context precision, and context recall on synthetic QA-style samples.",
   },
   {
     title: "8. User interface",

@@ -27,6 +27,7 @@ Mode = Literal["baseline", "advanced"]
 METRIC_PRECISION = "llm_context_precision_with_reference"
 METRIC_RECALL = "context_recall"
 METRIC_FAITHFULNESS = "faithfulness"
+METRIC_RESPONSE_RELEVANCE_KEYS = ("response_relevancy", "response_relevance", "answer_relevancy")
 SYNTHETIC_TESTSET_TIMEOUT_SECONDS = 300
 
 
@@ -49,6 +50,7 @@ class EvalSampleRow:
 @dataclass(frozen=True)
 class EvalScore:
     faithfulness: float
+    response_relevance: float
     context_precision: float
     context_recall: float
 
@@ -100,12 +102,21 @@ def _require_ragas() -> dict[str, Any]:
     _set_asyncio_policy_for_ragas()
     try:
         from ragas import EvaluationDataset, RunConfig, SingleTurnSample, evaluate
+        from ragas import metrics as ragas_metrics
         from ragas.embeddings import LangchainEmbeddingsWrapper
         from ragas.llms import LangchainLLMWrapper
         from ragas.metrics import Faithfulness, LLMContextPrecisionWithReference, LLMContextRecall
         from ragas.testset import TestsetGenerator
     except Exception as exc:  # noqa: BLE001
         raise RuntimeError(f"RAGAS import failed: {exc!s}") from exc
+
+    response_relevance_metric = (
+        getattr(ragas_metrics, "ResponseRelevancy", None)
+        or getattr(ragas_metrics, "ResponseRelevance", None)
+        or getattr(ragas_metrics, "AnswerRelevancy", None)
+    )
+    if response_relevance_metric is None:
+        raise RuntimeError("RAGAS response relevance metric is unavailable in the installed version.")
 
     return {
         "EvaluationDataset": EvaluationDataset,
@@ -117,6 +128,7 @@ def _require_ragas() -> dict[str, Any]:
         "Faithfulness": Faithfulness,
         "LLMContextPrecisionWithReference": LLMContextPrecisionWithReference,
         "LLMContextRecall": LLMContextRecall,
+        "ResponseRelevanceMetric": response_relevance_metric,
         "TestsetGenerator": TestsetGenerator,
     }
 
@@ -352,7 +364,7 @@ def _build_answer(question: str, contexts: list[str], answer_llm: ChatOpenAI) ->
     return str(content)
 
 
-def _extract_metric_from_result(eval_result: Any, metric_name: str) -> float:
+def _extract_metric_from_result_optional(eval_result: Any, metric_name: str) -> float | None:
     value = None
 
     if isinstance(eval_result, dict):
@@ -372,10 +384,25 @@ def _extract_metric_from_result(eval_result: Any, metric_name: str) -> float:
         except Exception:  # noqa: BLE001
             value = None
 
+    if value is None:
+        return None
     try:
-        return float(value) if value is not None else 0.0
+        return float(value)
     except Exception:  # noqa: BLE001
-        return 0.0
+        return None
+
+
+def _extract_metric_from_result(eval_result: Any, metric_name: str) -> float:
+    value = _extract_metric_from_result_optional(eval_result, metric_name)
+    return value if value is not None else 0.0
+
+
+def _extract_first_available_metric(eval_result: Any, metric_names: Sequence[str]) -> float:
+    for metric_name in metric_names:
+        value = _extract_metric_from_result_optional(eval_result, metric_name)
+        if value is not None:
+            return value
+    return 0.0
 
 
 def _evaluate_with_ragas(ragas_mod: dict[str, Any], samples: list[Any]) -> EvalScore:
@@ -389,6 +416,7 @@ def _evaluate_with_ragas(ragas_mod: dict[str, Any], samples: list[Any]) -> EvalS
                 ragas_mod["LLMContextPrecisionWithReference"](),
                 ragas_mod["LLMContextRecall"](),
                 ragas_mod["Faithfulness"](),
+                ragas_mod["ResponseRelevanceMetric"](),
             ],
             llm=ragas_mod["evaluator_llm"],
             embeddings=ragas_mod["generator_embeddings"],
@@ -400,6 +428,7 @@ def _evaluate_with_ragas(ragas_mod: dict[str, Any], samples: list[Any]) -> EvalS
 
     return EvalScore(
         faithfulness=round(_extract_metric_from_result(eval_result, METRIC_FAITHFULNESS), 4),
+        response_relevance=round(_extract_first_available_metric(eval_result, METRIC_RESPONSE_RELEVANCE_KEYS), 4),
         context_precision=round(_extract_metric_from_result(eval_result, METRIC_PRECISION), 4),
         context_recall=round(_extract_metric_from_result(eval_result, METRIC_RECALL), 4),
     )
@@ -480,6 +509,7 @@ def _format_mode_result(score: EvalScore, sample_rows: list[EvalSampleRow]) -> d
     return {
         "metrics": {
             "faithfulness": score.faithfulness,
+            "response_relevance": score.response_relevance,
             "context_precision": score.context_precision,
             "context_recall": score.context_recall,
         },
@@ -492,6 +522,7 @@ def _format_mode_result(score: EvalScore, sample_rows: list[EvalSampleRow]) -> d
                 "precision": score.context_precision,
                 "recall": score.context_recall,
                 "faithfulness": score.faithfulness,
+                "response_relevance": score.response_relevance,
             }
             for row in sample_rows
         ],
@@ -627,6 +658,10 @@ def run_compare_eval(
 
     deltas = {
         "faithfulness": round(advanced["metrics"]["faithfulness"] - baseline["metrics"]["faithfulness"], 4),
+        "response_relevance": round(
+            advanced["metrics"]["response_relevance"] - baseline["metrics"]["response_relevance"],
+            4,
+        ),
         "context_precision": round(
             advanced["metrics"]["context_precision"] - baseline["metrics"]["context_precision"],
             4,
