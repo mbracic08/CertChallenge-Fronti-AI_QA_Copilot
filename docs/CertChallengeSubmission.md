@@ -1,4 +1,6 @@
 # Fronti-AI QA Copilot - Certification Challenge Writeup
+Loom video: https://www.loom.com/share/cb67120fcdaf41bb85ab68729fda6f4d
+
 ---
 ## Task 1: Defining your Problem, Audience, and Scope
 ### 1. Write a succinct 1-sentence description of the problem
@@ -35,7 +37,7 @@ OpenAI chat models will generate Flow Spec test suggestions and support evaluati
 
 ### 2. Create an infrastructure diagram of your stack showing how everything fits together. Write one sentence on why you made each tooling choice.
 Infrastructure diagram
-![Fronti architecture diagram](web/public/diagrams/fronti-architecture-excalidraw.svg)
+![Fronti architecture diagram](web/public/diagrams/fronti-architecture-excalidraw.png)
 
 Tooling choices:
 1. LLM(s): OpenAI chat model generates agent outputs for Flow Spec Test suggestions and also supports evaluation-time answer generation and scoring because it provides stable API behavior and reliable instruction following.
@@ -93,50 +95,45 @@ Vercel link: https://cert-challenge-fronti-ai-qa-copilot.vercel.app/workspace
 ## Task 5: Evals
 ### 1. Assess your pipeline using the RAGAS framework including key metrics faithfulness, response relevance, context precision, and context recall. Provide a table of your output results.
 The synthetic test set is generated from the same Playwright documentation corpus, and the baseline retriever uses dense vector retrieval only.
+### Baseline Results
+Configuration: sample_size=12, top_k=5, fetch_k=20.
+
 | Metric | Baseline 
 |---|---
-| faithfulness | 0.8414 
-| context_precision | 0.7974 
-| context_recall | 0.6862 
+| faithfulness | 0.8028 
+| response_relevance | 0.8237 
+| context_precision | 0.7491 
+| context_recall | 0.7583 
 
-p.s. Sorry, I discovered after recording the video that I'm missing response relevance so this metric is added into code after video. 
+Note: response_relevance was added to the evaluation pipeline after the demo video was recorded, so this metric is reflected in the written results but not in the video UI.
 
 ### 2. What conclusions can you draw about the performance and effectiveness of your pipeline with this information?
-Baseline dense retrieval is a stable semantic baseline for Playwright QA queries and serves as reference point for advanced retriever comparison.
-
+Baseline dense retrieval provides a solid and reliable starting point: response relevance is strong (0.8237), while faithfulness (0.8028) is also good for documentation-grounded QA. Context precision (0.7491) and context recall (0.7583) indicate that retrieval quality is adequate but still has room to improve, which justifies testing advanced retrieval strategies.
 ---
-
-## Task 6: Advanced Retriever Upgrade
-### 1. Chosen technique and rationale
+## Task 6: Improving Your Prototype
+### 1. Choose an advanced retrieval technique that you believe will improve your application’s ability to retrieve the most appropriate context. Write 1-2 sentences on why you believe it will be useful for your use case.
 The advanced technique uses a contextual compression retriever with a BM25 stage followed by Cohere reranking, where dense retrieval captures semantic intent, BM25 improves lexical matching for strict technical terms, and reranking improves the ordering of candidate chunks before final scoring.
 
-### 2. Implementation summary
+### 2. Implement the advanced retrieval technique on your application.
 Advanced retrieval is implemented as a multi-stage pipeline that first combines dense Qdrant similarity results with BM25 lexical results through an ensemble retriever, then applies contextual compression with an embeddings-based filter, deduplicates candidates by chunk identity and source, and finally applies Cohere reranking when available to produce the final ranked context set.
 
-### 3. Performance comparison
-Configuration used: sample_size=20, top_k=5, fetch_k=25.
-![Performance comparison (sample_size=20, top_k=5, fetch_k=25)](../web/public/diagrams/performance-comparison-s20-k5-f25.svg)
+### 3. How does the performance compare to your original RAG application? Test the new retrieval pipeline using the RAGAS frameworks to quantify any improvements. Provide results in a table.
+Configuration used: sample_size=12, top_k=5, fetch_k=20.
+![Performance comparison (sample_size=12, top_k=5, fetch_k=20)](web/public/diagrams/performance-comparison.jpg)
 
 | Metric | Baseline | Advanced | Delta |
 |---|---:|---:|---:|
-| faithfulness | 0.8414 | 0.8418 | 0.0004 |
-| context_precision | 0.7974 | 0.7679 | -0.0295 |
-| context_recall | 0.6862 | 0.6567 | -0.0295 |
+| faithfulness | 0.8028 | 0.9583 | +0.1555 |
+| response_relevance | 0.8237 | 0.8023 | -0.0214 |
+| context_precision | 0.7491 | 0.8375 | +0.0884 |
+| context_recall | 0.7583 | 0.8241 | +0.0658 |
 
-Short conclusion:
-In this run, the advanced retriever did not outperform the baseline.
-Faithfulness is slightly higher for advanced by 0.0004, but this difference is negligible in practice.
-Context precision is lower by 0.0295, which indicates that advanced retrieval returned less relevant context on average.
-Context recall is also lower by 0.0295, which suggests that advanced retrieval captured less of the needed context than baseline.
-Overall, with sample_size 20, top_k 5, and fetch_k 25, the extra advanced steps did not improve quality and likely introduced either additional noise or over-filtering.
-This does not mean the advanced approach is generally worse, but it does mean it needs further tuning of retrieval weights and parameters before it can consistently beat baseline.
-
+Short conclusion:  
+In this specific run (sample_size=12, top_k=5, fetch_k=20), the advanced retriever outperformed baseline on three of four metrics (faithfulness, context precision, and context recall), with a small drop in response relevance.  
+However, this does not yet prove consistent superiority: in earlier runs, advanced retrieval was often close to baseline or worse.  
+Therefore, baseline dense retrieval remains the most stable default, while the advanced pipeline is kept for further tuning and repeated validation across configurations.
 ---
-
 ## Task 7: Next Steps
-Yes, for Demo Day I plan to keep Dense Vector Retrieval as the primary retrieval strategy.
-In my current evaluation runs, dense retrieval is more stable and has shown more consistent overall performance than the advanced pipeline, which has not yet produced repeatable improvements across configurations.
-I will keep the advanced retriever in the codebase for further tuning and comparison, but dense retrieval is the safer production choice for a reliable live demo.
-
+### 1. Do you plan to keep your RAG implementation via Dense Vector Retrieval for Demo Day? Why or why not?
+I currently plan to keep Dense Vector Retrieval as the primary strategy for Demo Day because it has been more stable so far. In parallel, I will continue tuning the advanced retriever parameters and running additional evaluations to see whether we can achieve stable, consistent results that reliably outperform the baseline.
 ---
-Loom video: https://www.loom.com/share/cb67120fcdaf41bb85ab68729fda6f4d
