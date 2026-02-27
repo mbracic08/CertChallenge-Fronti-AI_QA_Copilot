@@ -1,9 +1,23 @@
 import { NextResponse } from "next/server";
 
-const RUNNER_BASE_URL = process.env.RUNNER_BASE_URL ?? "http://localhost:8000";
+const RUNNER_BASE_URL =
+  process.env.RUNNER_BASE_URL ??
+  (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "");
 const RUNNER_API_KEY = process.env.RUNNER_API_KEY;
 
 export async function POST(request: Request) {
+  if (!RUNNER_BASE_URL) {
+    return NextResponse.json(
+      {
+        error: {
+          code: "RUNNER_CONFIG_MISSING",
+          message: "RUNNER_BASE_URL is not set for this environment.",
+        },
+      },
+      { status: 500 },
+    );
+  }
+
   try {
     const body = await request.json();
     const response = await fetch(`${RUNNER_BASE_URL}/jobs`, {
@@ -43,6 +57,18 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
+  if (!RUNNER_BASE_URL) {
+    return NextResponse.json(
+      {
+        error: {
+          code: "RUNNER_CONFIG_MISSING",
+          message: "RUNNER_BASE_URL is not set for this environment.",
+        },
+      },
+      { status: 500 },
+    );
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const response = await fetch(`${RUNNER_BASE_URL}/jobs?${searchParams.toString()}`, {

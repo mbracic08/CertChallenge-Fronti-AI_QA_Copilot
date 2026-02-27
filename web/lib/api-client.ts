@@ -69,11 +69,13 @@ export async function getJob(jobId: string): Promise<JobState> {
     method: "GET",
   });
 
+  const data = await response.json().catch(() => null);
   if (!response.ok) {
-    throw new Error("Failed to fetch job status.");
+    const detail = typeof data === "object" && data !== null ? JSON.stringify(data) : "unknown error";
+    throw new Error(`Failed to fetch job status: ${detail}`);
   }
 
-  return response.json();
+  return data as JobState;
 }
 
 export async function cancelJob(jobId: string): Promise<JobState> {
