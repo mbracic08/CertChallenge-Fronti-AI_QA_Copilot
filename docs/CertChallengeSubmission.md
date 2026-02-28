@@ -37,7 +37,7 @@ OpenAI chat models will generate Flow Spec test suggestions and support evaluati
 
 ### 2. Create an infrastructure diagram of your stack showing how everything fits together. Write one sentence on why you made each tooling choice.
 Infrastructure diagram
-![Fronti architecture diagram](web/public/diagrams/fronti-architecture-excalidraw.png)
+![Fronti architecture diagram](../web/public/diagrams/fronti-architecture-excalidraw.png)
 
 Tooling choices:
 1. LLM(s): OpenAI chat model generates agent outputs for Flow Spec Test suggestions and also supports evaluation-time answer generation and scoring because it provides stable API behavior and reliable instruction following.
