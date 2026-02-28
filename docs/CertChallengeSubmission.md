@@ -119,7 +119,7 @@ Advanced retrieval is implemented as a multi-stage pipeline that first combines 
 
 ### 3. How does the performance compare to your original RAG application? Test the new retrieval pipeline using the RAGAS frameworks to quantify any improvements. Provide results in a table.
 Configuration used: sample_size=12, top_k=5, fetch_k=20.
-![Performance comparison (sample_size=12, top_k=5, fetch_k=20)](web/public/diagrams/performance-comparison.png)
+![Performance comparison (sample_size=12, top_k=5, fetch_k=20)](../web/public/diagrams/performance-comparison.png)
 
 | Metric | Baseline | Advanced | Delta |
 |---|---:|---:|---:|
