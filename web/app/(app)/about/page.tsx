@@ -124,7 +124,7 @@ export default function AboutPage() {
           <img
             alt="Fronti architecture diagram"
             className="w-full rounded-md border border-border"
-            src="/diagrams/fronti-architecture-excalidraw.svg"
+            src="/diagrams/fronti-architecture-excalidraw.png"
           />
         </CardContent>
       </Card>
